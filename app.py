@@ -93,14 +93,14 @@ if st.button("Detect"):
         )
 
         # Display result
-        if prediction == 1:
+if prediction == 0:
 
-            st.error(
-                f"⚠️ PHISHING URL\n\nConfidence: {confidence:.2%}"
-            )
+    st.error(
+        f"⚠️ PHISHING URL\n\nConfidence: {confidence:.2%}"
+    )
 
-        else:
+else:
 
-            st.success(
-                f"✅ LEGITIMATE URL\n\nConfidence: {confidence:.2%}"
-            )
+    st.success(
+        f"✅ LEGITIMATE URL\n\nConfidence: {confidence:.2%}"
+    )
