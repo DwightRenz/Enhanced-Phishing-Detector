@@ -113,16 +113,11 @@ if st.button("Detect"):
         st.markdown("---")
 
         # Display result
-        if prediction == 1:
-
-            st.error(
-                f"⚠️ PHISHING URL DETECTED\n\nConfidence: {confidence:.2%}"
-            )
-
-        else:
-
-            st.success(
-                f"✅ LEGITIMATE URL\n\nConfidence: {confidence:.2%}"
+        # FIXED — swap the labels
+if prediction == 0:
+    st.error(f"⚠️ PHISHING URL DETECTED\n\nConfidence: {confidence:.2%}")
+else:
+    st.success(f"✅ LEGITIMATE URL\n\nConfidence: {confidence:.2%}")
             )
 
 # --------------------------
