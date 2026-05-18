@@ -21,8 +21,13 @@ tokenizer = joblib.load(
 # --------------------------
 # CNN-LSTM Feature Extractor
 # --------------------------
+cnn_model.build(
+    input_shape=(None, 200)
+)
+
+# Feature extractor
 feature_extractor = Model(
-    inputs=cnn_model.input,
+    inputs=cnn_model.inputs,
     outputs=cnn_model.get_layer(
         "feature_layer"
     ).output
