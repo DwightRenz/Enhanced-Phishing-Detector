@@ -7,7 +7,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Model
 
 # --------------------------
-# Load models
+# Load Models
 # --------------------------
 
 cnn_model = load_model(
@@ -37,16 +37,25 @@ feature_extractor = Model(
 # Streamlit UI
 # --------------------------
 
+st.set_page_config(
+    page_title="Phishing URL Detector",
+    page_icon="🛡️",
+    layout="centered"
+)
+
 st.title(
-    "Phishing URL Detection System"
+    "🛡️ Phishing URL Detection System"
 )
 
 st.write(
     "Enhanced Random Forest using CNN-LSTM Feature Extraction"
 )
 
+st.markdown("---")
+
 url_input = st.text_input(
-    "Enter URL"
+    "Enter URL",
+    placeholder="https://example.com"
 )
 
 # --------------------------
@@ -63,27 +72,28 @@ if st.button("Detect"):
 
     else:
 
-        # Convert URL to sequence
+        # Convert URL into sequences
         sequence = tokenizer.texts_to_sequences(
             [url_input]
         )
 
+        # Pad sequence
         padded = pad_sequences(
             sequence,
             maxlen=200
         )
 
-        # Extract deep features
+        # Extract CNN-LSTM features
         features = feature_extractor.predict(
             padded
         )
 
-        # RF prediction
+        # Random Forest prediction
         prediction = rf_model.predict(
             features
         )[0]
 
-        # Probability
+        # Prediction probabilities
         probability = rf_model.predict_proba(
             features
         )[0]
@@ -92,15 +102,27 @@ if st.button("Detect"):
             probability
         )
 
-        # Display result
-if prediction == 0:
+        st.markdown("---")
 
-    st.error(
-        f"⚠️ PHISHING URL\n\nConfidence: {confidence:.2%}"
-    )
+        # Display Result
+        if prediction == 0:
 
-else:
+            st.error(
+                f"⚠️ PHISHING URL DETECTED\n\nConfidence: {confidence:.2%}"
+            )
 
-    st.success(
-        f"✅ LEGITIMATE URL\n\nConfidence: {confidence:.2%}"
-    )
+        else:
+
+            st.success(
+                f"✅ LEGITIMATE URL\n\nConfidence: {confidence:.2%}"
+            )
+
+# --------------------------
+# Footer
+# --------------------------
+
+st.markdown("---")
+
+st.caption(
+    "Final Project: Enhanced Random Forest Classifier Using CNN-LSTM Feature Extraction for Real-Time Phishing URL Detection"
+)
