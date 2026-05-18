@@ -34,7 +34,7 @@ feature_extractor = Model(
 )
 
 # --------------------------
-# Streamlit UI
+# Streamlit Page Config
 # --------------------------
 
 st.set_page_config(
@@ -42,6 +42,10 @@ st.set_page_config(
     page_icon="🛡️",
     layout="centered"
 )
+
+# --------------------------
+# Title
+# --------------------------
 
 st.title(
     "🛡️ Phishing URL Detection System"
@@ -52,6 +56,10 @@ st.write(
 )
 
 st.markdown("---")
+
+# --------------------------
+# URL Input
+# --------------------------
 
 url_input = st.text_input(
     "Enter URL",
@@ -72,12 +80,12 @@ if st.button("Detect"):
 
     else:
 
-        # Convert URL into sequences
+        # Convert URL to sequences
         sequence = tokenizer.texts_to_sequences(
             [url_input]
         )
 
-        # Pad sequence
+        # Pad sequences
         padded = pad_sequences(
             sequence,
             maxlen=200
@@ -104,8 +112,8 @@ if st.button("Detect"):
 
         st.markdown("---")
 
-        # Display Result
-        if prediction == 0:
+        # Display result
+        if prediction == 1:
 
             st.error(
                 f"⚠️ PHISHING URL DETECTED\n\nConfidence: {confidence:.2%}"
