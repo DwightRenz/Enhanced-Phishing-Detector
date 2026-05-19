@@ -96,7 +96,9 @@ def analyze_url(url):
 
     hyphens = url.count('-')
 
-    has_https = url.startswith("https")
+    has_https = url.startswith(
+        "https"
+    )
 
     has_ip = bool(
         re.search(
@@ -111,7 +113,9 @@ def analyze_url(url):
 
         if word in url.lower():
 
-            found_keywords.append(word)
+            found_keywords.append(
+                word
+            )
 
     return {
         "length": url_length,
@@ -174,8 +178,13 @@ if st.button("Detect"):
             probability
         )
 
-        legitimate_probability = probability[0] * 100
-        phishing_probability = probability[1] * 100
+        legitimate_probability = (
+            probability[0] * 100
+        )
+
+        phishing_probability = (
+            probability[1] * 100
+        )
 
         # -----------------------------------
         # URL Analysis
@@ -194,7 +203,11 @@ if st.button("Detect"):
         if prediction == 1:
 
             st.error(
-                f"⚠️ PHISHING URL DETECTED\n\nConfidence: {confidence:.2%}"
+                f"""
+                ⚠️ PHISHING URL DETECTED
+                
+                Confidence: {confidence:.2%}
+                """
             )
 
             st.markdown(
@@ -208,7 +221,11 @@ if st.button("Detect"):
         else:
 
             st.success(
-                f"✅ LEGITIMATE URL\n\nConfidence: {confidence:.2%}"
+                f"""
+                ✅ LEGITIMATE URL
+                
+                Confidence: {confidence:.2%}
+                """
             )
 
             st.markdown(
@@ -223,70 +240,140 @@ if st.button("Detect"):
         # Risk Assessment
         # -----------------------------------
 
-        st.markdown("## Risk Assessment")
+        st.markdown(
+            "## Risk Assessment"
+        )
 
-        if confidence >= 0.90:
+        if prediction == 1:
 
-            st.error("HIGH CONFIDENCE")
+            if confidence >= 0.90:
 
-        elif confidence >= 0.70:
+                st.error(
+                    "HIGH RISK PHISHING DETECTION"
+                )
 
-            st.warning("MEDIUM CONFIDENCE")
+            elif confidence >= 0.70:
+
+                st.warning(
+                    "MEDIUM RISK PHISHING DETECTION"
+                )
+
+            else:
+
+                st.info(
+                    "LOW CONFIDENCE PHISHING DETECTION"
+                )
 
         else:
 
-            st.info("LOW CONFIDENCE")
+            if confidence >= 0.90:
+
+                st.success(
+                    "HIGH CONFIDENCE LEGITIMATE URL"
+                )
+
+            elif confidence >= 0.70:
+
+                st.info(
+                    "MODERATE CONFIDENCE LEGITIMATE URL"
+                )
+
+            else:
+
+                st.warning(
+                    "LOW CONFIDENCE LEGITIMATE URL"
+                )
 
         # -----------------------------------
-        # Probability Statistics
+        # Prediction Statistics
         # -----------------------------------
 
-        st.markdown("## Prediction Statistics")
+        st.markdown(
+            "## Prediction Statistics"
+        )
 
         st.write(
             f"Legitimate Probability: {legitimate_probability:.2f}%"
+        )
+
+        st.progress(
+            int(legitimate_probability)
         )
 
         st.write(
             f"Phishing Probability: {phishing_probability:.2f}%"
         )
 
+        st.progress(
+            int(phishing_probability)
+        )
+
         # -----------------------------------
         # URL Feature Analysis
         # -----------------------------------
 
-        st.markdown("## URL Feature Analysis")
+        st.markdown(
+            "## URL Feature Analysis"
+        )
 
-        table_data = {
-            "Feature": [
-                "URL Length",
-                "Number of Dots",
-                "Number of Hyphens",
-                "Uses HTTPS",
-                "Contains IP Address",
-                "Suspicious Keywords"
-            ],
+        col1, col2, col3 = st.columns(3)
 
-            "Result": [
-                analysis["length"],
-                analysis["dots"],
-                analysis["hyphens"],
-                analysis["https"],
-                analysis["ip"],
+        col1.metric(
+            "URL Length",
+            analysis["length"]
+        )
+
+        col2.metric(
+            "Dots",
+            analysis["dots"]
+        )
+
+        col3.metric(
+            "Hyphens",
+            analysis["hyphens"]
+        )
+
+        col4, col5 = st.columns(2)
+
+        col4.metric(
+            "Uses HTTPS",
+            str(
+                analysis["https"]
+            )
+        )
+
+        col5.metric(
+            "Contains IP",
+            str(
+                analysis["ip"]
+            )
+        )
+
+        st.markdown(
+            "### Suspicious Keywords"
+        )
+
+        if analysis["keywords"]:
+
+            st.warning(
                 ", ".join(
                     analysis["keywords"]
-                ) if analysis["keywords"]
-                else "None"
-            ]
-        }
+                )
+            )
 
-        st.table(table_data)
+        else:
+
+            st.success(
+                "No suspicious keywords detected"
+            )
 
         # -----------------------------------
         # Security Interpretation
         # -----------------------------------
 
-        st.markdown("## Security Interpretation")
+        st.markdown(
+            "## Security Interpretation"
+        )
 
         if analysis["keywords"]:
 
