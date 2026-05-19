@@ -71,6 +71,10 @@ url_input = st.text_input(
     placeholder="https://example.com"
 )
 
+st.caption(
+    "Enter a full website URL such as https://google.com"
+)
+
 # -----------------------------------
 # URL Analysis Function
 # -----------------------------------
@@ -139,7 +143,15 @@ if st.button("Detect"):
         )
 
     else:
+# -----------------------------------
+# URL Validation
+# -----------------------------------
 
+if not url_input.startswith(
+    ("http://", "https://")
+):
+
+    url_input = "https://" + url_input
         # -----------------------------------
         # Convert URL to Sequence
         # -----------------------------------
