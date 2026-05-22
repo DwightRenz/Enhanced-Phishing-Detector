@@ -423,6 +423,126 @@ if st.button("Detect"):
                 "No major suspicious indicators were detected."
             )
 
+        # -----------------------------------
+        # SHAP-Based Interpretation
+        # -----------------------------------
+
+        st.markdown(
+            "## SHAP-Based Interpretation"
+        )
+
+        st.write(
+            """
+            The following interpretation explains which URL characteristics most influenced the model's prediction.
+            """
+        )
+
+        shap_features = []
+
+        # Suspicious Keywords
+        if analysis["keywords"]:
+
+            shap_features.append(
+                (
+                    "Suspicious Keywords",
+                    "High Influence",
+                    "Authentication-related keywords were detected in the URL."
+                )
+            )
+
+        # Hyphens
+        if analysis["hyphens"] >= 3:
+
+            shap_features.append(
+                (
+                    "Multiple Hyphens",
+                    "Medium Influence",
+                    "Many hyphens are commonly associated with phishing URLs."
+                )
+            )
+
+        # HTTPS
+        if not analysis["https"]:
+
+            shap_features.append(
+                (
+                    "No HTTPS",
+                    "High Influence",
+                    "The URL does not use HTTPS encryption."
+                )
+            )
+
+        # IP Address
+        if analysis["ip"]:
+
+            shap_features.append(
+                (
+                    "Raw IP Address",
+                    "Very High Influence",
+                    "URLs containing raw IP addresses are highly suspicious."
+                )
+            )
+
+        # URL Length
+        if analysis["length"] > 75:
+
+            shap_features.append(
+                (
+                    "Long URL",
+                    "Medium Influence",
+                    "Very long URLs are frequently used to hide malicious content."
+                )
+            )
+
+        # Dots
+        if analysis["dots"] > 5:
+
+            shap_features.append(
+                (
+                    "Excessive Dots",
+                    "Low Influence",
+                    "Multiple subdomains may indicate URL obfuscation."
+                )
+            )
+
+        # Safe Indicators
+        if (
+            analysis["https"]
+            and not analysis["keywords"]
+            and analysis["hyphens"] <= 2
+        ):
+
+            shap_features.append(
+                (
+                    "Safe URL Structure",
+                    "Positive Influence",
+                    "The URL structure resembles trusted legitimate websites."
+                )
+            )
+
+        # Display Explanation
+        if shap_features:
+
+            for feature, impact, explanation in shap_features:
+
+                with st.container():
+
+                    st.markdown(
+                        f"""
+                        ### {feature}
+
+                        **Impact Level:** {impact}
+
+                        {explanation}
+                        """
+                    )
+
+        else:
+
+            st.info(
+                "No strong indicators significantly influenced the model prediction."
+            )
+
 # -----------------------------------
 # Footer
 # -----------------------------------
